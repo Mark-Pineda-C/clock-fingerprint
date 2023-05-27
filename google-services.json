@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "151534791208",
+    "project_id": "bioseguimiento",
+    "storage_bucket": "bioseguimiento.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:151534791208:android:e6c7fbcabcf026180da31d",
+        "android_client_info": {
+          "package_name": "com.markfpc.clockfingerprint"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "151534791208-sa7ihan44hl2g4ht5bsffhc2fh9ldf6u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAplCSKEkgKrK5vGenSW6s67fPcN2UCJm0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "151534791208-sa7ihan44hl2g4ht5bsffhc2fh9ldf6u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

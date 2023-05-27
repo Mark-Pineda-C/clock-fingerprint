@@ -21,10 +21,27 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "googleServicesFile": "./google-services.json",
+      "package": "com.markfpc.clockfingerprint"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "bd6d64c7-3a36-43e7-89e2-b580a1cdd26d"
+      }
+    },
+    "owner": "markfpc",
+    "plugins": [
+      "@react-native-firebase/app",
+      "@react-native-firebase/auth",
+      [
+        "expo-location", {
+          "isAndroidBackgroundLocationEnabled": true
+        }
+      ]
+    ]
   }
 }
