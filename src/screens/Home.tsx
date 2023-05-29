@@ -2,6 +2,7 @@ import React from 'react';
 import auth from '@react-native-firebase/auth';
 import { View, Text, Pressable } from 'react-native';
 import * as Location from 'expo-location';
+import MapView from 'react-native-maps';
 
 export default function HomeScreen() {
 
@@ -18,6 +19,7 @@ export default function HomeScreen() {
   React.useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
+      setStatus(status);
       if (status !== 'granted') {
         setErrorMsg('Permission to access location was denied');
         return;
@@ -28,14 +30,17 @@ export default function HomeScreen() {
   },[])
 
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Logged with:</Text>
-      <Text>{ auth().currentUser?.email }</Text>
-      {errorMsg && <Text>{errorMsg}</Text>}
-      <Text>Ubicacion { JSON.stringify(location) }</Text>
-      <Pressable onPress={doLogout}>
-        <Text>Log Out</Text>
-      </Pressable>
+    <View className='w-screen h-screen bg-white dark:bg-darkPrimary'>
+      <MapView
+        initialRegion={{
+          latitude: 37.78825,
+          longitude: -122.4324,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        }}
+      >
+
+      </MapView>
     </View>
   )
 }

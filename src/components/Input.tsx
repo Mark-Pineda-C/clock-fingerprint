@@ -29,6 +29,11 @@ const Input = ({name, value, onChange, error, icon, reference, onSubmitEditing}:
     input.current?.blur();
     reference?.current?.blur();
   })
+
+  const submit = () => {
+    reference?.current?.blur();
+    if(onSubmitEditing) onSubmitEditing();
+  }
     
   return (
     <View>
@@ -55,9 +60,11 @@ const Input = ({name, value, onChange, error, icon, reference, onSubmitEditing}:
         >
           <Motion.Text
             animate={{
-              fontSize: focus 
-                ? 12 
-                : 16, 
+              fontSize: hasValues()
+                ? 12
+                : focus 
+                  ? 12 
+                  : 16, 
               color: focus 
                 ? colorScheme === "light" 
                   ? "#006FFF" 
@@ -80,14 +87,14 @@ const Input = ({name, value, onChange, error, icon, reference, onSubmitEditing}:
           onBlur={() => value === "" ? setFocus(false) : null}
           onFocus={() => setFocus(true)}
           blurOnSubmit={false}
-          onSubmitEditing={onSubmitEditing}
+          onSubmitEditing={submit}
         />
         <Motion.View 
           className="absolute bottom-0 left-0 h-0.5 w-full border"
           style={{ borderColor: focus ? colorScheme === "light" ? "#006FFF" : "#348CFF" : error ? "red" : "#000"}}
           animate={{scaleX: hasValues() ? 1 : focus ? 1: 0}}/>
       </View>
-      {error && <Text className='text-red-500'>{error}</Text>}
+      <Text className='text-red-500 text-xs'>{error}</Text> 
     </View>
   )
 }

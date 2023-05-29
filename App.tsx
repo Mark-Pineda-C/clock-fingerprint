@@ -26,15 +26,12 @@ export default function App() {
     return subscriber; // unsubscribe on unmount
   }, []);
 
-  if(initializing) return null;
-
-
   return (
     <NavigationContainer>
       <Stack.Navigator>
         { !user 
             ? <Stack.Screen name="Login" component={LoginScreen} options={{headerShown: false}}/>
-            : <Stack.Screen name="Home" component={HomeScreen}/>
+            : <Stack.Screen name="Home" component={HomeScreen} options={{headerShown: false}}/>
         }
       </Stack.Navigator>
     </NavigationContainer>

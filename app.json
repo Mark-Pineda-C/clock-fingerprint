@@ -23,7 +23,17 @@
         "backgroundColor": "#ffffff"
       },
       "googleServicesFile": "./google-services.json",
-      "package": "com.markfpc.clockfingerprint"
+      "package": "com.markfpc.clockfingerprint",
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_BACKGROUND_LOCATION"
+      ],
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyC3wrXyQH-RKu42sLr0cZ1n51pZ0-NnP2I"
+        }
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"

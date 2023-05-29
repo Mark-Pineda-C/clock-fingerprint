@@ -4,6 +4,8 @@ import { View, Text, TextInput, Pressable, Keyboard } from 'react-native';
 import { BlurView } from '@react-native-community/blur';
 import { useColorScheme } from 'nativewind';
 import Input from '../components/Input';
+import { Motion } from '@legendapp/motion';
+import ClockLoader from '../components/ClockLoader';
 
 export default function LoginScreen() {
 
@@ -30,6 +32,12 @@ export default function LoginScreen() {
    */
   function doLogin() {
     setIsLogin(true);
+    if(email === "" || password === "") {
+      setIsLogin(false);
+      if(email === "") setEmailError("El correo electronico es requerido");
+      if(password === "") setPasswordError("La contraseña es requerida");
+      return;
+    }
     auth()
       .signInWithEmailAndPassword(email, password)
       .then(() => {
@@ -53,6 +61,9 @@ export default function LoginScreen() {
 
   return (
     <View className='relative bg-white dark:bg-darkPrimary h-screen flex flex-col items-center justify-center'>
+      <Motion.View tw='absolute top-0 z-50 w-screen h-screen' pointerEvents="none" animate={{opacity: isLogin ? 1 : 0}}>
+        <BlurView style={{width: "100%", height: "100%"}} blurType='light' blurAmount={15} />
+      </Motion.View>
       <View className={`absolute z-0 top-[-20%] left-[-45%] bg-emerald-600 h-[400px] rounded-full flex justify-center items-center`} style={{aspectRatio: 1}}>
         <View className={`bg-emerald-600 h-[460px] opacity-75 rounded-full flex justify-center items-center`} style={{aspectRatio: 1}}>
           <View className={`bg-emerald-600 h-[520px] opacity-50 rounded-full flex justify-center items-center`} style={{aspectRatio: 1}}>
@@ -84,12 +95,9 @@ export default function LoginScreen() {
       <View className='relative w-11/12 translate-x-10 bg-white dark:bg-darkSeconday h-60 mt-20 p-10 flex flex-col' style={{elevation: 10, gap: 25}} >
         <Input icon="user-alt" name='Correo Electronico' value={email} onChange={setEmail} error={emailError} onSubmitEditing={() => refNext.current?.focus()}/>
         <Input icon="lock" name='Contraseña' value={password} onChange={setPassword} error={passwordError} reference={refNext} onSubmitEditing={doLogin}/>
-        <Text className='self-end dark:text-white'>Recuperar Contraseña</Text>
+        <Text className='self-end dark:text-white underline'>Recuperar Contraseña</Text>
         <Pressable onPress={doLogin} className='bg-black dark:bg-white absolute bottom-[-20px] right-[20px] pl-12 pr-10 py-2'>
-          {isLogin 
-            ? <Text className='text-white dark:text-black uppercase font-bold text-xl'>Cargando...</Text> 
-            : <Text className='text-white dark:text-black uppercase font-bold text-xl'>Ingresar</Text>
-          }
+          <Text className='text-white dark:text-black uppercase font-bold text-xl'>Ingresar</Text>
         </Pressable>
       </View>
     </View>
