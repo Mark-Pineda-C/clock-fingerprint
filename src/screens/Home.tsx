@@ -4,10 +4,12 @@ import { View, Text, Pressable } from 'react-native';
 import * as Location from 'expo-location';
 import MapView, { Polygon } from 'react-native-maps';
 import { useColorScheme } from 'nativewind';
+import Svg, { Defs, RadialGradient, Stop, Rect } from "react-native-svg";
 
 export default function HomeScreen() {
 
   const { colorScheme } = useColorScheme();
+  const [color, setColor] = React.useState("#007A0C");
   const [location, setLocation] = React.useState<Location.LocationObject | null>();
   const [errorMsg, setErrorMsg] = React.useState('');
   const [status, setStatus] = React.useState<Location.PermissionStatus | null>()
@@ -33,6 +35,18 @@ export default function HomeScreen() {
 
   return (
     <View className='w-screen h-screen bg-white dark:bg-darkPrimary'>
+      <Svg height="100%" width="100%" className='absolute top-0 z-50'>
+        <Defs>
+          <RadialGradient
+            id="grad"
+          >
+            <Stop offset="0.5" stopColor={color} stopOpacity="0" />
+            <Stop offset="0.65" stopColor={color} stopOpacity="0.25" />
+            <Stop offset="1" stopColor={color} stopOpacity="0.5" />
+          </RadialGradient>
+        </Defs>
+        <Rect y="-30%" x="-30%" width="160%" height="160%" fill="url(#grad)" />
+      </Svg>
       <MapView
         region={{
           latitude: -12.093482934627227, 
