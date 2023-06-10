@@ -5,14 +5,34 @@ import * as Location from 'expo-location';
 import MapView, { Polygon } from 'react-native-maps';
 import { useColorScheme } from 'nativewind';
 import Svg, { Defs, RadialGradient, Stop, Rect } from "react-native-svg";
+import { createMotionComponent } from '@legendapp/motion'
+import { isInside } from '../utils/MapUtils';
+
+const MotionSVG = createMotionComponent(Svg)
+const MotionStop = createMotionComponent(Stop)
+
+const polygon = [{
+    latitude: -12.004639077695442,  
+    longitude: -77.09031456317132
+  },{
+    latitude: -12.005177374028387, 
+    longitude: -77.090043907992, 
+  },{
+    latitude: -12.005459758559862, 
+    longitude: -77.09033260684994
+  },{
+    latitude: -12.004806743881678, 
+    longitude: -77.09065739306513 
+}]
 
 export default function HomeScreen() {
 
   const { colorScheme } = useColorScheme();
-  const [color, setColor] = React.useState("#007A0C");
+  const [step, setStep] = React.useState(0);
   const [location, setLocation] = React.useState<Location.LocationObject | null>();
   const [errorMsg, setErrorMsg] = React.useState('');
   const [status, setStatus] = React.useState<Location.PermissionStatus | null>()
+  const [inside, setInside] = React.useState(false);
 
   function doLogout() {
     auth()
@@ -30,61 +50,53 @@ export default function HomeScreen() {
       }
       let location = await Location.getCurrentPositionAsync({});
       setLocation(location);
+      setInside(isInside(location,polygon))
     })(); 
-  },[])
+  },[Location])
 
   return (
-    <View className='w-screen h-screen bg-white dark:bg-darkPrimary'>
-      <Svg height="100%" width="100%" className='absolute top-0 z-50'>
+    <View className='w-screen h-screen bg-white dark:bg-darkPrimary relative flex items-center justify-center'>
+      <MotionSVG height="100%" width="100%" className='absolute top-0 z-10'>
         <Defs>
           <RadialGradient
             id="grad"
           >
-            <Stop offset="0.5" stopColor={color} stopOpacity="0" />
-            <Stop offset="0.65" stopColor={color} stopOpacity="0.25" />
-            <Stop offset="1" stopColor={color} stopOpacity="0.5" />
+            <Stop offset="0.5" stopColor={step === 1 ? '#7A0000' : '#007A0C'} stopOpacity="0" />
+            <Stop offset="0.65" stopColor={step === 1 ? '#7A0000' : '#007A0C'} stopOpacity="0.25" />
+            <Stop offset="1" stopColor={step === 1 ? '#7A0000' : '#007A0C'} stopOpacity="0.5" />
           </RadialGradient>
         </Defs>
         <Rect y="-30%" x="-30%" width="160%" height="160%" fill="url(#grad)" />
-      </Svg>
+      </MotionSVG>
       <MapView
         region={{
-          latitude: -12.093482934627227, 
-          longitude: -77.03397478119528,
+          latitude: -12.0050891288016,  
+          longitude: -77.09034162868926,
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421
         }}
         showsPointsOfInterest={false}
         showsMyLocationButton={false}
-        minZoomLevel={16}
+        minZoomLevel={17}
         toolbarEnabled={false}
         scrollEnabled={false}
         rotateEnabled={false}
         zoomEnabled={false}
         showsUserLocation
-        className='w-full h-full'
+        className='w-full h-full absolute top-0 z-0'
         userInterfaceStyle="dark"
       >
         <Polygon
-          coordinates={[{
-              latitude: -12.092609637516395, 
-              longitude: -77.0344468570595
-            },{
-              latitude: -12.092447453453252, 
-              longitude: -77.03352822294532
-            },{
-              latitude: -12.094480984975945,
-              longitude: -77.03317097634536
-            },{
-              latitude: -12.0940193871527, 
-              longitude: -77.03486789769516
-            }
-          ]}
+          coordinates={polygon}
           strokeWidth={2}
           strokeColor='#16486b'
           fillColor='#16486b33'
         />
       </MapView>
+      <Pressable className='bg-red-500 px-5 py-2 rounded-full z-20 disabled:bg-red-300' onPress={() => setStep(step === 1 ? 0 : 1)} disabled={!location}>
+        <Text className='text-center text-white'>{ location ? "cambiar" : "cargando" }</Text>
+      </Pressable>
+      {inside && <Text>Dentro</Text>}
     </View>
   )
 }
