@@ -50,9 +50,21 @@ export default function HomeScreen() {
       }
       let location = await Location.getCurrentPositionAsync({});
       setLocation(location);
-      setInside(isInside(location,polygon))
     })(); 
   },[Location])
+
+  React.useEffect(() => {
+    if(location){
+      const value = isInside(location!,polygon);
+
+      if(!value){
+        setStep(1)
+        setInside(false)
+        return;
+      }
+      setInside(true);
+    }
+  },[location])
 
   return (
     <View className='w-screen h-screen bg-white dark:bg-darkPrimary relative flex items-center justify-center'>
@@ -97,6 +109,9 @@ export default function HomeScreen() {
         <Text className='text-center text-white'>{ location ? "cambiar" : "cargando" }</Text>
       </Pressable>
       {inside && <Text>Dentro</Text>}
+      <Pressable className='bg-blue-500 px-5 py-2 z-20' onPress={doLogout}>
+        <Text>Salir</Text>
+      </Pressable>
     </View>
   )
 }
