@@ -3,32 +3,14 @@ import auth from '@react-native-firebase/auth';
 import { View, Text, Pressable } from 'react-native';
 import * as Location from 'expo-location';
 import MapView, { Polygon } from 'react-native-maps';
-import { useColorScheme } from 'nativewind';
 import Svg, { Defs, RadialGradient, Stop, Rect } from "react-native-svg";
-import { createMotionComponent } from '@legendapp/motion'
-import { isInside } from '../utils/MapUtils';
+import { AppConfig, isInside } from '../utils/MapUtils';
+import firestore from '@react-native-firebase/firestore';
 
-const MotionSVG = createMotionComponent(Svg)
-const MotionStop = createMotionComponent(Stop)
-
-const polygon = [{
-    latitude: -12.004639077695442,  
-    longitude: -77.09031456317132
-  },{
-    latitude: -12.005177374028387, 
-    longitude: -77.090043907992, 
-  },{
-    latitude: -12.005459758559862, 
-    longitude: -77.09033260684994
-  },{
-    latitude: -12.004806743881678, 
-    longitude: -77.09065739306513 
-}]
 
 export default function HomeScreen() {
-
-  const { colorScheme } = useColorScheme();
   const [step, setStep] = React.useState(0);
+  const [polygon, setPolygon] = React.useState<AppConfig>();
   const [location, setLocation] = React.useState<Location.LocationObject | null>();
   const [errorMsg, setErrorMsg] = React.useState('');
   const [status, setStatus] = React.useState<Location.PermissionStatus | null>()
@@ -48,14 +30,19 @@ export default function HomeScreen() {
         setErrorMsg('Permission to access location was denied');
         return;
       }
-      let location = await Location.getCurrentPositionAsync({});
+      let location = await Location.getCurrentPositionAsync({accuracy: Location.Accuracy.Highest});
       setLocation(location);
     })(); 
   },[Location])
 
   React.useEffect(() => {
+    const subsribe = firestore().collection('appConfig').doc('modelo').onSnapshot((doc) => {
+      const data = doc.data() as AppConfig;
+      setPolygon(data);
+    })
+
     if(location){
-      const value = isInside(location!,polygon);
+      const value = isInside(location!,polygon?.geoValidation!);
 
       if(!value){
         setStep(1)
@@ -64,11 +51,13 @@ export default function HomeScreen() {
       }
       setInside(true);
     }
+
+    return () => subsribe();
   },[location])
 
   return (
     <View className='w-screen h-screen bg-white dark:bg-darkPrimary relative flex items-center justify-center'>
-      <MotionSVG height="100%" width="100%" className='absolute top-0 z-10'>
+      <Svg height="100%" width="100%" className='absolute top-0 z-10'>
         <Defs>
           <RadialGradient
             id="grad"
@@ -79,7 +68,7 @@ export default function HomeScreen() {
           </RadialGradient>
         </Defs>
         <Rect y="-30%" x="-30%" width="160%" height="160%" fill="url(#grad)" />
-      </MotionSVG>
+      </Svg>
       <MapView
         region={{
           latitude: -12.0050891288016,  
@@ -99,7 +88,7 @@ export default function HomeScreen() {
         userInterfaceStyle="dark"
       >
         <Polygon
-          coordinates={polygon}
+          coordinates={polygon?.geoValidation!}
           strokeWidth={2}
           strokeColor='#16486b'
           fillColor='#16486b33'
