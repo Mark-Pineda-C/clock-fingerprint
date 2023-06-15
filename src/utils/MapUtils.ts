@@ -1,3 +1,4 @@
+import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import * as Location from 'expo-location';
 import { LatLng } from 'react-native-maps';
 interface RegionProps{
@@ -21,4 +22,10 @@ export function isInside (point: Location.LocationObject, coordinates: LatLng[])
     }
 
     return inside;
+}
+
+export interface AppConfig {
+    adminId: string;
+    appName: string;
+    geoValidation: FirebaseFirestoreTypes.GeoPoint[];
 }
