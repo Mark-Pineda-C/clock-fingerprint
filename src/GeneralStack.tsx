@@ -24,7 +24,6 @@ const GeneralStack = ({ id }: { id: string }) => {
       .doc(id || "")
       .onSnapshot(
         (querySnapshot) => {
-          console.log(querySnapshot.data());
           setUser(querySnapshot.data() as UserData);
           setloading(false);
         },
@@ -45,7 +44,10 @@ const GeneralStack = ({ id }: { id: string }) => {
         <NavigationContainer>
           <AuthContext.Provider value={{ user: user! }}>
             {user!.role === "admin" ? (
-              <Tabs.Navigator tabBar={(props) => <CustomTabs {...props} />}>
+              <Tabs.Navigator
+                tabBar={(props) => <CustomTabs {...props} />}
+                initialRouteName="USUARIOS"
+              >
                 <Tabs.Screen
                   name="MARCAR"
                   component={HomeScreen}

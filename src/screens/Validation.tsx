@@ -26,7 +26,7 @@ const Validation = () => {
   }, []);
 
   return (
-    <View className="w-screen h-screen p-5 flex-1">
+    <View className="w-full h-full flex flex-col items-center">
       {records && (
         <FlatList
           data={records}

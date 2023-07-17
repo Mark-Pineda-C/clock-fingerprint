@@ -15,8 +15,9 @@ export interface UserData {
     check_out_hour?: string;
     salary?: number;
     is_super_admin?: boolean;
-    lastCheck: "entrada" | "salida" | "";
+    lastCheck: Pick<RecordData, "timestamp" | "type">;
     for_test: boolean;
+    location: RegionProps;
 }
 
 export interface RecordData {
@@ -31,8 +32,7 @@ export interface RecordData {
 
 
 export function isInside (point: Location.LocationObject, coordinates: LatLng[]) {
-    const x = point.coords.latitude; // latitude
-    const y = point.coords.longitude; // longitude
+    const { latitude, longitude } = point.coords;
 
     let inside = false;
     for (let i = 0, j = coordinates.length - 1; i < coordinates.length; j = i++) {
@@ -41,7 +41,11 @@ export function isInside (point: Location.LocationObject, coordinates: LatLng[])
         const xj = coordinates[j].latitude;
         const yj = coordinates[j].longitude;
 
-        const intersect = ((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+        const intersect =  
+            yi > longitude !== yj > longitude &&
+            latitude <
+            ((xj - xi) * (longitude - yi)) / (yj - yi) + xi;
+
         if (intersect) inside = !inside;
     }
 
@@ -69,3 +73,15 @@ export function compareTime(targetTime: number[], threshold = [1,15] ){
     }
     return 0;
 }
+
+export function formatTextToTime(text: string) {
+    const sanitizedText = text.replace(/[^0-9]/g, '');
+
+    if (sanitizedText.length <= 4) {
+        let formattedTime = sanitizedText;
+        if (sanitizedText.length >= 3) {
+          formattedTime = `${sanitizedText.substr(0, 2)}:${sanitizedText.substr(2, 2)}`;
+        }
+        return formattedTime;
+      }
+  }
